@@ -1,0 +1,17 @@
+#include <msp430.h>
+
+void main(void)
+{
+    WDTCTL = WDTPW + WDTHOLD;  // disable wdt
+    P1DIR |= BIT6;   // make P1.6 output
+    P1OUT = 0x00; // no initial output 
+    P1SEL |= BIT6;  // initializing which output is PWM bit 6 
+    TACCR0 = 62500-1; // 500000/8
+    TACCTL1 = OUTMOD_7;
+    TACCR1 = 6250-1; // duty cycle 10%
+    TACTL = TASSEL_2 + MC_1 + ID_3;  // clock initialization 
+
+    while(1){
+        P1OUT ^= BIT6; //toggle red led
+    }
+}
