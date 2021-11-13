@@ -2,32 +2,16 @@
 
 void main(void)
 {
-    WDTCTL =WDTPW + WDTHOLD;
-
+    WDTCTL = WDTPW + WDTHOLD;
     P1DIR |= BIT6;
-    TA0CTL = TASSEL_2 + MC_1 + ID_3 + TACLR;
+    P1OUT = 0x00;
+    P1SEL |= BIT6;
+    TACCR0 = 62500-1;
+    TACCTL1 = OUTMOD_7;
+    TACCR1 = 6250-1;
+    TACTL = TASSEL_2 + MC_1 + ID_3;
 
-    TA0CCR0 = 31250;
-    TA0CCR1 = 6250;
-
-    TA0CCTL0 |= CCIE;
-    TA0CCTL1 |= CCIE;
-
-    TA0CCTL0 &=~CCIFG;
-    TA0CCTL1 &=~CCIFG;
-
-    _enable_interrupts();
-}
-#pragma vector = TIMER0_A0_VECTOR
-__interrupt void TA0_ISR (void)
-{
-    P1OUT |= BIT6;
-    TA0CCTL0 &=~CCIFG;
-}
-
-#pragma vector = TIMER0_A1_VECTOR
-__interrupt void TA1_ISR (void)
-    {
-    P1OUT &=~BIT6;
-    TA0CCTL1 &=~CCIFG;
+    while(1){
+        P1OUT ^= BIT6;
     }
+}
